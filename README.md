@@ -1,28 +1,5 @@
 # AlliDB: A Comprehensive Overview
 
-## Table of Contents
-
-1. [Introduction](#introduction) - [Full details](docs/ALLIDB_OVERVIEW.md#introduction)
-2. [About Tensor Thoughts](#about-tensor-thoughts) - [Full details](docs/ALLIDB_OVERVIEW.md#about-tensor-thoughts)
-3. [Why AlliDB?](#why-allidb) - [Full details](docs/ALLIDB_OVERVIEW.md#why-allidb)
-4. [The Name "Alli"](#the-name-alli) - [Full details](docs/ALLIDB_OVERVIEW.md#the-name-alli)
-5. [What Makes AlliDB Different](#what-makes-allidb-different) - [Full details](docs/ALLIDB_OVERVIEW.md#what-makes-allidb-different)
-6. [Key Features & Specialties](#key-features--specialties) - [Full details](docs/ALLIDB_OVERVIEW.md#key-features--specialties)
-7. [Built-in LLM Integration](#built-in-llm-integration) - [Full details](docs/ALLIDB_OVERVIEW.md#built-in-llm-integration)
-8. [Architecture Overview](#architecture-overview) - [Full details](docs/ALLIDB_OVERVIEW.md#architecture-overview)
-9. [Storage Architecture (Low-Level)](#storage-architecture-low-level) - [Full details](docs/ALLIDB_OVERVIEW.md#storage-architecture-low-level)
-10. [Data Structures](#data-structures) - [Full details](docs/ALLIDB_OVERVIEW.md#data-structures)
-11. [Component Interactions](#component-interactions) - [Full details](docs/ALLIDB_OVERVIEW.md#component-interactions)
-12. [HTTP and gRPC APIs](#http-and-grpc-apis) - [Full details](docs/ALLIDB_OVERVIEW.md#http-and-grpc-apis)
-13. [Vector Search Implementation](#vector-search-implementation) - [Full details](docs/ALLIDB_OVERVIEW.md#vector-search-implementation)
-14. [Graph RAG Implementation](#graph-rag-implementation) - [Full details](docs/ALLIDB_OVERVIEW.md#graph-rag-implementation)
-15. [Class Diagrams](#class-diagrams) - [Full details](docs/ALLIDB_OVERVIEW.md#class-diagrams)
-16. [Clustering & Distributed Protocols](#clustering--distributed-protocols) - [Full details](docs/ALLIDB_OVERVIEW.md#clustering--distributed-protocols)
-17. [Configuration System](#configuration-system) - [Full details](docs/ALLIDB_OVERVIEW.md#configuration-system)
-18. [Conclusion](#conclusion) - [Full details](docs/ALLIDB_OVERVIEW.md#conclusion)
-
----
-
 ## Introduction
 
 So, what's AlliDB? It's a **distributed vector + graph database** that's built specifically for **Retrieval-Augmented Generation (RAG)** workloads. The thing is, most databases treat vector search and graph traversal as completely separate things. AlliDB brings them together in one high-performance system that's designed to power the next generation of AI applications.
