@@ -1,0 +1,41 @@
+version: '3.8'
+
+# Development docker-compose with single node for easier testing
+services:
+  allidb:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: allidb-dev
+    ports:
+      - "50051:50051"  # gRPC
+      - "8080:8080"    # HTTP
+    volumes:
+      - allidb-dev-data:/data
+      - ../benchmark/data:/app/benchmark/data:ro
+      # Config is already included in the image at /app/configs/allidb.yaml
+      # Mount additional configs if needed: - ./configs:/app/configs:ro
+    environment:
+      - ALLIDB_NODE_ID=node1
+      - ALLIDB_DATA_DIR=/data
+      - ALLIDB_WAL_DIR=/data/wal
+      - ALLIDB_SSTABLE_DIR=/data/sstables
+      - ALLIDB_GRPC_ADDR=0.0.0.0:50051
+      - ALLIDB_HTTP_ADDR=0.0.0.0:8080
+      - ALLIDB_LOG_LEVEL=DEBUG
+    networks:
+      - allidb-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  allidb-dev-data:
+
+networks:
+  allidb-network:
+    driver: bridge
+

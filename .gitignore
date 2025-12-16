@@ -1,0 +1,21 @@
+# Build artifacts
+build/
+
+# Local data directories
+data/
+
+# Local config (per-node, not checked in)
+configs/allidb.yaml
+
+# Go build cache / modules (optional, keep if you prefer)
+bin/
+*.exe
+*.test
+*.out
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+

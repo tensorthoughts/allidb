@@ -1,0 +1,366 @@
+# AlliDB Configuration Template
+# This is a comprehensive template with all available configuration options.
+# Copy this file to allidb.yaml and customize for your deployment.
+
+# ============================================================================
+# Node Configuration
+# ============================================================================
+node:
+  # Unique identifier for this node (required, must be unique in cluster)
+  id: "node-1"
+  
+  # Network address to bind to (0.0.0.0 for all interfaces, 127.0.0.1 for localhost only)
+  listen_address: "0.0.0.0"
+  
+  # gRPC server port (default: 7000)
+  grpc_port: 7000
+  
+  # HTTP/REST server port (default: 7001)
+  http_port: 7001
+  
+  # Directory for storing WAL, SSTables, and other persistent data
+  # Default: /var/lib/allidb
+  data_dir: "/var/lib/allidb"
+
+# ============================================================================
+# Cluster Configuration
+# ============================================================================
+cluster:
+  # Seed nodes for cluster discovery (format: "host:port" or "node-id")
+  # For single node: ["node-1:7946"]
+  # For multi-node: ["node-1:7946", "node-2:7946", "node-3:7946"]
+  seed_nodes:
+    - "node-1:7946"
+    - "node-2:7946"
+    - "node-3:7946"
+  
+  # Replication factor (number of copies of each piece of data)
+  # Single node: 1
+  # Production: 3 (recommended for fault tolerance)
+  replication_factor: 3
+  
+  # Port for gossip protocol (node-to-node communication)
+  gossip_port: 7946
+  
+  # How often to exchange gossip messages (milliseconds)
+  # Lower = faster failure detection, higher network overhead
+  gossip_interval_ms: 1000
+  
+  # Time before marking a node as dead (milliseconds)
+  # Should be several times larger than gossip_interval_ms
+  failure_timeout_ms: 5000
+  
+  # How often to cleanup dead nodes from cluster state (milliseconds)
+  cleanup_interval_ms: 60000
+  
+  # Number of nodes to gossip with per round
+  # Single node: 1
+  # Multi-node: 3 (recommended)
+  fanout: 3
+  
+  # Number of virtual nodes per physical node in consistent hashing ring
+  # Higher = better key distribution, but more memory
+  # Recommended: 100-200
+  virtual_nodes_per_node: 150
+
+# ============================================================================
+# Storage Configuration
+# ============================================================================
+storage:
+  # Write-Ahead Log (WAL) configuration
+  wal:
+    # Maximum size of a WAL file before rotation (MB)
+    # Larger files = fewer rotations, but longer recovery time
+    max_file_mb: 128
+    
+    # Whether to fsync after each write (true = safer, false = faster)
+    # Production: true (data durability)
+    # Development: false (better performance)
+    fsync: true
+  
+  # Memtable (in-memory write buffer) configuration
+  memtable:
+    # Maximum size before flushing to SSTable (MB)
+    # Larger = fewer flushes, but more memory usage
+    # Recommended: 256-1024 MB
+    max_mb: 256
+  
+  # SSTable (on-disk storage) configuration
+  sstable:
+    # Block size for SSTable files (KB)
+    # Larger blocks = better compression, but larger read amplification
+    block_size_kb: 64
+  
+  # Compaction configuration
+  compaction:
+    # Maximum number of concurrent compaction jobs
+    # Higher = faster compaction, but more CPU/IO usage
+    max_concurrent: 2
+    
+    # Number of SSTables of similar size before triggering compaction
+    # Lower = more frequent compaction, better space efficiency
+    size_tier_threshold: 4
+
+# ============================================================================
+# Index Configuration
+# ============================================================================
+index:
+  # HNSW (Hierarchical Navigable Small World) vector index configuration
+  hnsw:
+    # Number of bidirectional links for each node (M parameter)
+    # Higher = better recall, but more memory and slower inserts
+    # Recommended: 16-32
+    m: 16
+    
+    # Size of dynamic candidate list during graph construction
+    # Higher = better graph quality, but slower inserts
+    # Recommended: 100-200
+    ef_construction: 200
+    
+    # Size of dynamic candidate list during search
+    # Higher = better recall, but slower queries
+    # Recommended: 32-128
+    ef_search: 64
+    
+    # Number of shards for concurrent access
+    # Higher = better parallelism, but more overhead
+    # Recommended: 8-32
+    shard_count: 16
+  
+  # Maximum number of entities in graph cache (LRU eviction)
+  # Higher = better graph traversal performance, but more memory
+  graph_cache_size: 10000
+  
+  # Maximum number of entities in entity cache (LRU eviction)
+  # Higher = fewer SSTable lookups, but more memory
+  entity_cache_size: 1000
+
+  # Enable real-time indexing from the write path
+  # - true: entities are added to the unified index immediately on write (great for demos)
+  # - false: entities are indexed only via SSTable reload (more production-like behavior)
+  realtime_index_enabled: false
+  
+  # How often to check for new SSTables and reload index (milliseconds)
+  # Lower = faster updates, but more CPU usage
+  reload_interval_ms: 5000
+
+# ============================================================================
+# Query Configuration
+# ============================================================================
+query:
+  # Default consistency level for queries
+  # Options: "ONE", "QUORUM", "ALL"
+  # - ONE: Fastest, reads from any replica
+  # - QUORUM: Balanced, reads from majority of replicas (recommended)
+  # - ALL: Strongest, reads from all replicas
+  default_consistency: "QUORUM"
+  
+  # Maximum number of graph hops for query expansion
+  # Higher = more graph exploration, but slower queries
+  max_graph_hops: 2
+  
+  # Query timeout (milliseconds)
+  # Queries exceeding this will be cancelled
+  timeout_ms: 500
+  
+  # Default number of results to return (k parameter)
+  default_k: 10
+  
+  # Maximum number of candidates to consider during search
+  # Higher = better recall, but slower queries
+  max_candidates: 1000
+
+# ============================================================================
+# Security Configuration
+# ============================================================================
+security:
+  # Authentication configuration
+  auth:
+    # Enable API key authentication
+    enabled: true
+    
+    # HTTP header name for API key
+    # Clients must send: X-ALLIDB-API-KEY: <key>
+    api_key_header: "X-ALLIDB-API-KEY"
+    
+    # Static API keys (for development / small deployments)
+    # Production: Use external secret manager (HashiCorp Vault, AWS Secrets Manager, etc.)
+    static_api_keys:
+      - key: "test-api-key"
+        tenant_id: "tenant1"
+      - key: "another-key"
+        tenant_id: "tenant2"
+  
+  # TLS/SSL configuration
+  tls:
+    # Enable TLS for node-to-node and client connections
+    enabled: false
+    
+    # Path to server certificate file (PEM format)
+    cert_file: ""
+    
+    # Path to server private key file (PEM format)
+    key_file: ""
+    
+    # Path to CA certificate file for client verification (optional)
+    ca_file: ""
+
+# ============================================================================
+# Observability Configuration
+# ============================================================================
+observability:
+  # Log level: "DEBUG", "INFO", "WARN", "ERROR"
+  # DEBUG: Verbose logging for development
+  # INFO: Standard production logging (recommended)
+  # WARN: Only warnings and errors
+  # ERROR: Only errors
+  log_level: "INFO"
+  
+  # Enable Prometheus-compatible metrics endpoint
+  # Metrics available at: http://<host>:<http_port>/metrics
+  metrics_enabled: true
+
+# ============================================================================
+# Repair Configuration
+# ============================================================================
+repair:
+  # Enable read-time repair (fixes inconsistencies during reads)
+  # Recommended: true for production clusters
+  read_repair_enabled: true
+  
+  # Hinted handoff configuration
+  # Stores writes for temporarily unavailable nodes
+  hinted_handoff:
+    # Enable hinted handoff
+    enabled: true
+    
+    # Maximum number of hints to store per node
+    max_hints_per_node: 10000
+    
+    # Maximum total size of hints (MB)
+    max_size_mb: 1024
+    
+    # Time-to-live for hints (minutes)
+    # Hints older than this will be discarded
+    ttl_minutes: 60
+    
+    # How often to flush hints to disk (milliseconds)
+    flush_interval_ms: 1000
+  
+  # Anti-entropy repair configuration
+  # Periodic full repair using Merkle trees
+  anti_entropy:
+    # Enable anti-entropy repair
+    enabled: true
+    
+    # How often to run full repair (minutes)
+    # Default: 1440 (24 hours)
+    interval_minutes: 1440
+
+# ============================================================================
+# AI Configuration
+# ============================================================================
+ai:
+  # Embeddings provider configuration
+  # Used for vectorizing text queries and documents
+  embeddings:
+    # Provider: "openai", "ollama", "local", "custom"
+    # - openai: OpenAI API (requires OPENAI_API_KEY)
+    # - ollama: Local Ollama server (requires Ollama running)
+    # - local: Local model (not yet implemented)
+    # - custom: Custom provider (not yet implemented)
+    provider: "openai"
+    
+    # Model name (must match provider)
+    # OpenAI examples: "text-embedding-3-large", "text-embedding-3-small"
+    # Ollama examples: "nomic-embed-text", "all-minilm"
+    model: "text-embedding-3-large"
+    
+    # Vector dimension (MUST match model output)
+    # OpenAI text-embedding-3-large: 3072
+    # OpenAI text-embedding-3-small: 1536
+    # Ollama nomic-embed-text: 768
+    dim: 768  # nomic-embed-text produces 768-dimensional vectors
+    
+    # Request timeout (milliseconds)
+    timeout_ms: 3000
+  
+  # LLM provider configuration
+  # Used for entity extraction and other LLM tasks
+  llm:
+    # Provider: "openai", "ollama", "local", "custom"
+    provider: "openai"
+    
+    # Model name (must match provider)
+    # OpenAI examples: "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"
+    # Ollama examples: "llama3:8b", "llama3:70b", "mistral"
+    model: "gpt-4o-mini"
+    
+    # Temperature (0.0 = deterministic, 1.0 = creative)
+    # Recommended: 0.0 for entity extraction
+    temperature: 0.0
+    
+    # Maximum tokens in response
+    max_tokens: 2048
+    
+    # Request timeout (milliseconds)
+    timeout_ms: 5000
+  
+  # Entity extraction configuration
+  entity_extraction:
+    # Enable LLM-based entity and relation extraction
+    enabled: true
+    
+    # Maximum retries for malformed LLM responses
+    max_retries: 2
+
+# ============================================================================
+# Environment Variable Overrides
+# ============================================================================
+# All configuration values can be overridden using environment variables
+# with the ALLIDB_ prefix. Nested fields use underscores.
+#
+# Examples:
+#   ALLIDB_NODE_ID=node-2
+#   ALLIDB_CLUSTER_REPLICATION_FACTOR=5
+#   ALLIDB_STORAGE_WAL_FSYNC=false
+#   ALLIDB_AI_EMBEDDINGS_PROVIDER=ollama
+#   ALLIDB_AI_EMBEDDINGS_DIM=768
+#
+# Environment variables override YAML values.
+
+# ============================================================================
+# Deployment Scenarios
+# ============================================================================
+#
+# Single Node (Development):
+#   - cluster.seed_nodes: ["node-1:7946"]
+#   - cluster.replication_factor: 1
+#   - cluster.fanout: 1
+#   - query.default_consistency: "ONE"
+#   - repair.read_repair_enabled: false
+#   - repair.hinted_handoff.enabled: false
+#   - repair.anti_entropy.enabled: false
+#
+# Multi-Node (Production):
+#   - cluster.seed_nodes: ["node-1:7946", "node-2:7946", "node-3:7946"]
+#   - cluster.replication_factor: 3
+#   - cluster.fanout: 3
+#   - query.default_consistency: "QUORUM"
+#   - repair.read_repair_enabled: true
+#   - repair.hinted_handoff.enabled: true
+#   - repair.anti_entropy.enabled: true
+#   - security.tls.enabled: true
+#
+# High Performance (Write-Heavy):
+#   - storage.wal.fsync: false (if acceptable data loss risk)
+#   - storage.memtable.max_mb: 1024
+#   - storage.compaction.max_concurrent: 4
+#   - index.hnsw.ef_search: 32 (lower for speed)
+#
+# High Recall (Read-Heavy):
+#   - index.hnsw.ef_search: 128 (higher for better recall)
+#   - index.graph_cache_size: 50000
+#   - index.entity_cache_size: 5000
+#   - query.max_candidates: 2000
+

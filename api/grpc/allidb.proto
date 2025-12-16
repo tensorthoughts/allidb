@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package allidb;
+
+option go_package = "github.com/tensorthoughts25/allidb/api/grpc/pb";
+
+// AlliDB gRPC service
+service AlliDB {
+  // PutEntity stores a single entity
+  rpc PutEntity(PutEntityRequest) returns (PutEntityResponse);
+
+  // BatchPutEntities stores multiple entities in a single request
+  rpc BatchPutEntities(BatchPutEntitiesRequest) returns (BatchPutEntitiesResponse);
+
+  // Query performs a vector + graph search query
+  rpc Query(QueryRequest) returns (QueryResponse);
+
+  // RangeScan scans entities by key range (inclusive start, exclusive end)
+  rpc RangeScan(RangeScanRequest) returns (RangeScanResponse);
+
+  // ReplicaRead reads a raw value by key (for internal replication)
+  rpc ReplicaRead(ReplicaReadRequest) returns (ReplicaReadResponse);
+
+  // ReplicaWrite writes a raw value by key (for internal replication)
+  rpc ReplicaWrite(ReplicaWriteRequest) returns (ReplicaWriteResponse);
+
+  // HealthCheck checks the health of the service
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// ConsistencyLevel defines the consistency level for operations
+enum ConsistencyLevel {
+  CONSISTENCY_ONE = 0;    // One replica
+  CONSISTENCY_QUORUM = 1; // Quorum of replicas
+  CONSISTENCY_ALL = 2;    // All replicas
+}
+
+// VectorEmbedding represents a versioned vector embedding
+message VectorEmbedding {
+  int64 version = 1;           // Version number
+  repeated float vector = 2;   // The embedding vector (float32)
+  int64 timestamp_nanos = 3;   // Timestamp in nanoseconds since epoch
+}
+
+// GraphEdge represents a graph edge
+message GraphEdge {
+  string from_entity = 1;      // Source entity ID
+  string to_entity = 2;        // Target entity ID
+  string relation = 3;         // Relation type
+  double weight = 4;           // Edge weight
+  int64 timestamp_nanos = 5;   // Timestamp in nanoseconds since epoch
+}
+
+// TextChunk represents a text chunk
+message TextChunk {
+  string chunk_id = 1;         // Chunk identifier
+  string text = 2;             // Chunk text content
+  map<string, string> metadata = 3; // Optional metadata
+}
+
+// Entity represents a unified entity
+message Entity {
+  string entity_id = 1;                    // Entity identifier
+  string tenant_id = 2;                    // Tenant identifier
+  string entity_type = 3;                  // Entity type
+  repeated VectorEmbedding embeddings = 4; // Versioned vector embeddings
+  repeated GraphEdge incoming_edges = 5;   // Incoming graph edges
+  repeated GraphEdge outgoing_edges = 6;   // Outgoing graph edges
+  repeated TextChunk chunks = 7;           // Text chunks
+  double importance = 8;                   // Importance score
+  int64 created_at_nanos = 9;              // Creation timestamp in nanoseconds
+  int64 updated_at_nanos = 10;             // Last update timestamp in nanoseconds
+}
+
+// PutEntityRequest represents a request to put a single entity
+message PutEntityRequest {
+  Entity entity = 1;                      // Entity to store
+  ConsistencyLevel consistency_level = 2; // Consistency level for the operation
+  string trace_id = 3;                    // Optional trace ID for distributed tracing
+}
+
+// PutEntityResponse represents the response to a put entity request
+message PutEntityResponse {
+  bool success = 1;                       // Whether the operation succeeded
+  string error_message = 2;               // Error message if operation failed
+  string entity_id = 3;                   // Entity ID that was stored
+}
+
+// BatchPutEntitiesRequest represents a request to put multiple entities
+message BatchPutEntitiesRequest {
+  repeated Entity entities = 1;           // Entities to store
+  ConsistencyLevel consistency_level = 2; // Consistency level for the operation
+  string trace_id = 3;                    // Optional trace ID for distributed tracing
+}
+
+// BatchPutEntitiesResponse represents the response to a batch put request
+message BatchPutEntitiesResponse {
+  bool success = 1;                       // Whether all operations succeeded
+  string error_message = 2;               // Error message if operation failed
+  repeated string entity_ids = 3;         // Entity IDs that were stored
+  int32 success_count = 4;                // Number of successful operations
+  int32 failure_count = 5;                // Number of failed operations
+}
+
+// QueryRequest represents a query request
+message QueryRequest {
+  repeated float query_vector = 1;        // Query vector (float32)
+  int32 k = 2;                            // Number of results to return
+  int32 expand_factor = 3;                // Graph expansion factor (default: 2)
+  string trace_id = 4;                    // Optional trace ID for distributed tracing
+  ConsistencyLevel consistency_level = 5; // Consistency level for the operation
+}
+
+// QueryResult represents a single query result
+message QueryResult {
+  string entity_id = 1;                   // Entity identifier
+  double score = 2;                       // Relevance score
+  Entity entity = 3;                      // The entity (optional, may be omitted for performance)
+}
+
+// QueryResponse represents the response to a query request
+message QueryResponse {
+  repeated QueryResult results = 1;       // Query results
+  string trace_id = 2;                    // Trace ID (echoed from request)
+  int32 total_results = 3;                // Total number of results
+}
+
+// RangeScanRequest requests entities within a key range.
+message RangeScanRequest {
+  string tenant_id = 1;     // Tenant identifier (optional if provided via auth)
+  string start_key = 2;     // Inclusive start key (empty = beginning)
+  string end_key = 3;       // Exclusive end key (empty = no upper bound)
+  int32 limit = 4;          // Maximum entities to return (pagination)
+  string page_token = 5;    // Opaque page token (offset-based)
+  string node_id = 6;       // Optional target node (if empty, server routes locally)
+}
+
+// RangeScanResponse returns entities and a pagination token.
+message RangeScanResponse {
+  repeated Entity entities = 1;   // Entities in sorted key order
+  string next_page_token = 2;     // Next page token if more results
+}
+
+// ReplicaReadRequest reads raw data by key.
+message ReplicaReadRequest {
+  string key = 1;
+  string tenant_id = 2;
+}
+
+message ReplicaReadResponse {
+  bytes value = 1;
+}
+
+// ReplicaWriteRequest writes raw data by key.
+message ReplicaWriteRequest {
+  string key = 1;
+  bytes value = 2;
+  string tenant_id = 3;
+}
+
+message ReplicaWriteResponse {
+  bool success = 1;
+}
+
+// HealthCheckRequest represents a health check request
+message HealthCheckRequest {
+  // Empty - no parameters needed
+}
+
+// HealthCheckResponse represents the response to a health check
+message HealthCheckResponse {
+  bool healthy = 1;                       // Whether the service is healthy
+  string status = 2;                      // Status message
+  int64 timestamp_nanos = 3;              // Timestamp of the health check
+}
+

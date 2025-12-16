@@ -1,0 +1,94 @@
+node:
+  id: "node-1"
+  listen_address: "0.0.0.0"
+  grpc_port: 7000
+  http_port: 7001
+  data_dir: "/var/lib/allidb/data/allidb"
+
+cluster:
+  seed_nodes:
+    - "node-1:7946"  # Single node: use local node with gossip port
+  replication_factor: 1  # Single node: no replication
+  gossip_port: 7946
+  gossip_interval_ms: 1000
+  failure_timeout_ms: 5000
+  cleanup_interval_ms: 60000
+  fanout: 1  # Single node: only gossip with self
+  virtual_nodes_per_node: 150
+
+storage:
+  wal:
+    max_file_mb: 128
+    fsync: true
+  memtable:
+    max_mb: 256
+  sstable:
+    block_size_kb: 64
+  compaction:
+    max_concurrent: 2
+    size_tier_threshold: 4
+
+index:
+  hnsw:
+    m: 16
+    ef_construction: 200
+    ef_search: 64
+    shard_count: 16
+  graph_cache_size: 10000
+  entity_cache_size: 1000
+  reload_interval_ms: 5000
+  realtime_index_enabled: true  # Enable real-time indexing from write path (good for demos)
+
+query:
+  default_consistency: "ONE"  # Single node: ONE is sufficient (no quorum needed)
+  max_graph_hops: 2
+  timeout_ms: 500
+  default_k: 10
+  max_candidates: 1000
+
+security:
+  auth:
+    enabled: true
+    api_key_header: "X-ALLIDB-API-KEY"
+    static_api_keys:
+      - key: "test-api-key"
+        tenant_id: "tenant1"
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+    ca_file: ""
+
+observability:
+  log_level: "INFO"
+  metrics_enabled: true
+
+repair:
+  read_repair_enabled: false  # Single node: no replication, no repair needed
+  hinted_handoff:
+    enabled: false  # Single node: no other nodes to handoff to
+    max_hints_per_node: 10000
+    max_size_mb: 1024
+    ttl_minutes: 60
+    flush_interval_ms: 1000
+  anti_entropy:
+    enabled: false  # Single node: no other nodes to sync with
+    interval_minutes: 1440
+
+ai:
+  embeddings:
+    provider: "ollama"   # openai | ollama | local | custom
+    model: "nomic-embed-text"
+    dim: 768  # nomic-embed-text produces 768-dimensional vectors
+    timeout_ms: 3000
+
+  llm:
+    provider: "ollama"   # openai | ollama | local | custom
+    model: "llama3:8b"
+    temperature: 0.0
+    max_tokens: 2048
+    timeout_ms: 5000
+
+  entity_extraction:
+    enabled: true
+    max_retries: 2

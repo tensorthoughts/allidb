@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  allidb-node1:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: allidb-node1
+    ports:
+      - "50051:50051"  # gRPC
+      - "8080:8080"    # HTTP
+    volumes:
+      - allidb-node1-data:/data
+      - ../benchmark/data:/app/benchmark/data:ro
+      # Config is already included in the image at /app/configs/allidb.yaml
+      # Mount additional configs if needed: - ./configs:/app/configs:ro
+    environment:
+      - ALLIDB_NODE_ID=node1
+      - ALLIDB_CLUSTER_NODES=node1:50051,node2:50051,node3:50051
+      - ALLIDB_DATA_DIR=/data
+      - ALLIDB_WAL_DIR=/data/wal
+      - ALLIDB_SSTABLE_DIR=/data/sstables
+      - ALLIDB_GRPC_ADDR=0.0.0.0:50051
+      - ALLIDB_HTTP_ADDR=0.0.0.0:8080
+      - ALLIDB_LOG_LEVEL=INFO
+    networks:
+      - allidb-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  allidb-node2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: allidb-node2
+    ports:
+      - "50052:50051"  # gRPC
+      - "8081:8080"    # HTTP
+    volumes:
+      - allidb-node2-data:/data
+      - ../benchmark/data:/app/benchmark/data:ro
+      # Config is already included in the image at /app/configs/allidb.yaml
+      # Mount additional configs if needed: - ./configs:/app/configs:ro
+    environment:
+      - ALLIDB_NODE_ID=node2
+      - ALLIDB_CLUSTER_NODES=node1:50051,node2:50051,node3:50051
+      - ALLIDB_DATA_DIR=/data
+      - ALLIDB_WAL_DIR=/data/wal
+      - ALLIDB_SSTABLE_DIR=/data/sstables
+      - ALLIDB_GRPC_ADDR=0.0.0.0:50051
+      - ALLIDB_HTTP_ADDR=0.0.0.0:8080
+      - ALLIDB_LOG_LEVEL=INFO
+    networks:
+      - allidb-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  allidb-node3:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: allidb-node3
+    ports:
+      - "50053:50051"  # gRPC
+      - "8082:8080"    # HTTP
+    volumes:
+      - allidb-node3-data:/data
+      - ../benchmark/data:/app/benchmark/data:ro
+      # Config is already included in the image at /app/configs/allidb.yaml
+      # Mount additional configs if needed: - ./configs:/app/configs:ro
+    environment:
+      - ALLIDB_NODE_ID=node3
+      - ALLIDB_CLUSTER_NODES=node1:50051,node2:50051,node3:50051
+      - ALLIDB_DATA_DIR=/data
+      - ALLIDB_WAL_DIR=/data/wal
+      - ALLIDB_SSTABLE_DIR=/data/sstables
+      - ALLIDB_GRPC_ADDR=0.0.0.0:50051
+      - ALLIDB_HTTP_ADDR=0.0.0.0:8080
+      - ALLIDB_LOG_LEVEL=INFO
+    networks:
+      - allidb-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  allidb-node1-data:
+  allidb-node2-data:
+  allidb-node3-data:
+
+networks:
+  allidb-network:
+    driver: bridge
+
