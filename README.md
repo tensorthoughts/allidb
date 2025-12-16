@@ -2,24 +2,24 @@
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [About Tensor Thoughts](#about-tensor-thoughts)
-3. [Why AlliDB?](#why-allidb)
-4. [The Name "Alli"](#the-name-alli)
-5. [What Makes AlliDB Different](#what-makes-allidb-different)
-6. [Key Features & Specialties](#key-features--specialties)
-7. [Built-in LLM Integration](#built-in-llm-integration)
-8. [Architecture Overview](#architecture-overview)
-9. [Storage Architecture (Low-Level)](#storage-architecture-low-level)
-10. [Data Structures](#data-structures)
-11. [Component Interactions](#component-interactions)
-12. [HTTP and gRPC APIs](#http-and-grpc-apis)
-13. [Vector Search Implementation](#vector-search-implementation)
-14. [Graph RAG Implementation](#graph-rag-implementation)
-15. [Class Diagrams](#class-diagrams)
-16. [Clustering & Distributed Protocols](#clustering--distributed-protocols)
-17. [Configuration System](#configuration-system)
-18. [Conclusion](#conclusion)
+1. [Introduction](#introduction) - [Full details](docs/ALLIDB_OVERVIEW.md#introduction)
+2. [About Tensor Thoughts](#about-tensor-thoughts) - [Full details](docs/ALLIDB_OVERVIEW.md#about-tensor-thoughts)
+3. [Why AlliDB?](#why-allidb) - [Full details](docs/ALLIDB_OVERVIEW.md#why-allidb)
+4. [The Name "Alli"](#the-name-alli) - [Full details](docs/ALLIDB_OVERVIEW.md#the-name-alli)
+5. [What Makes AlliDB Different](#what-makes-allidb-different) - [Full details](docs/ALLIDB_OVERVIEW.md#what-makes-allidb-different)
+6. [Key Features & Specialties](#key-features--specialties) - [Full details](docs/ALLIDB_OVERVIEW.md#key-features--specialties)
+7. [Built-in LLM Integration](#built-in-llm-integration) - [Full details](docs/ALLIDB_OVERVIEW.md#built-in-llm-integration)
+8. [Architecture Overview](#architecture-overview) - [Full details](docs/ALLIDB_OVERVIEW.md#architecture-overview)
+9. [Storage Architecture (Low-Level)](#storage-architecture-low-level) - [Full details](docs/ALLIDB_OVERVIEW.md#storage-architecture-low-level)
+10. [Data Structures](#data-structures) - [Full details](docs/ALLIDB_OVERVIEW.md#data-structures)
+11. [Component Interactions](#component-interactions) - [Full details](docs/ALLIDB_OVERVIEW.md#component-interactions)
+12. [HTTP and gRPC APIs](#http-and-grpc-apis) - [Full details](docs/ALLIDB_OVERVIEW.md#http-and-grpc-apis)
+13. [Vector Search Implementation](#vector-search-implementation) - [Full details](docs/ALLIDB_OVERVIEW.md#vector-search-implementation)
+14. [Graph RAG Implementation](#graph-rag-implementation) - [Full details](docs/ALLIDB_OVERVIEW.md#graph-rag-implementation)
+15. [Class Diagrams](#class-diagrams) - [Full details](docs/ALLIDB_OVERVIEW.md#class-diagrams)
+16. [Clustering & Distributed Protocols](#clustering--distributed-protocols) - [Full details](docs/ALLIDB_OVERVIEW.md#clustering--distributed-protocols)
+17. [Configuration System](#configuration-system) - [Full details](docs/ALLIDB_OVERVIEW.md#configuration-system)
+18. [Conclusion](#conclusion) - [Full details](docs/ALLIDB_OVERVIEW.md#conclusion)
 
 ---
 
@@ -310,6 +310,48 @@ ai:
 
 ## Storage Architecture (Low-Level)
 
-For the full deep-dive (including protocol-level and byte-level details), see the original detailed doc at `docs/ALLIDB_OVERVIEW.md`.
+For the full deep-dive (including protocol-level and byte-level details), see [Storage Architecture (Low-Level)](docs/ALLIDB_OVERVIEW.md#storage-architecture-low-level) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Data Structures
+
+For detailed information about core data structures, see [Data Structures](docs/ALLIDB_OVERVIEW.md#data-structures) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Component Interactions
+
+For detailed write/read/replication flows, see [Component Interactions](docs/ALLIDB_OVERVIEW.md#component-interactions) in `docs/ALLIDB_OVERVIEW.md`.
+
+## HTTP and gRPC APIs
+
+For complete API documentation with examples, see [HTTP and gRPC APIs](docs/ALLIDB_OVERVIEW.md#http-and-grpc-apis) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Vector Search Implementation
+
+For detailed HNSW algorithm explanation and integration details, see [Vector Search Implementation](docs/ALLIDB_OVERVIEW.md#vector-search-implementation) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Graph RAG Implementation
+
+For complete Graph RAG implementation details and examples, see [Graph RAG Implementation](docs/ALLIDB_OVERVIEW.md#graph-rag-implementation) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Class Diagrams
+
+For detailed class diagrams of all layers, see [Class Diagrams](docs/ALLIDB_OVERVIEW.md#class-diagrams) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Clustering & Distributed Protocols
+
+For protocol-level and byte-level details of clustering, gossip, and replication, see [Clustering & Distributed Protocols](docs/ALLIDB_OVERVIEW.md#clustering--distributed-protocols) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Configuration System
+
+For complete configuration documentation, see [Configuration System](docs/ALLIDB_OVERVIEW.md#configuration-system) in `docs/ALLIDB_OVERVIEW.md`.
+
+## Additional Resources
+
+- **Full Documentation**: See [docs/ALLIDB_OVERVIEW.md](docs/ALLIDB_OVERVIEW.md) for the complete comprehensive overview
+- **Architecture Details**: See `docs/ARCHITECTURE.md`
+- **Storage Internals**: See `docs/STORAGE.md`
+- **API Reference**: See `docs/API.md`
+- **Usage Guide**: See `docs/USAGE.md`
+- **Configuration**: See `configs/allidb.yaml.template`
+- **ADRs**: See `docs/adr/` for design decisions
 
 
