@@ -86,9 +86,9 @@ So we built AlliDB to solve all of this. Here's what it gives you:
 
 ## The Name "Alli"
 
-AlliDB is named after **Alli**, my daughter. I wanted to build something that mattered, something that was both powerful and reliable—the kind of system you'd trust with important stuff. That's why it's got her name.
+AlliDB is named after **Alli**, my daughter. I wanted to build something that mattered, something that was both powerful and reliable, the kind of system you'd trust with important stuff. That's why it's got her name.
 
-The name also works perfectly because it's all about **bringing together** (all-i) different capabilities—vectors, graphs, storage, and AI—into one unified system. No more juggling multiple databases!
+The name also works perfectly because it's all about **bringing together** (all-i) different capabilities, vectors, graphs, storage, and AI, into one unified system. No more juggling multiple databases!
 
 ---
 
@@ -113,7 +113,7 @@ Most vector databases stick with in-memory indexes or basic disk storage. We wen
 
 ### 3. **Built-in LLM Integration**
 
-Here's another thing: AlliDB doesn't just store vectors—it actually generates them for you:
+Here's another thing: AlliDB doesn't just store vectors, it actually generates them for you:
 
 - **Embedding Generation**: Native support for OpenAI, Ollama, and custom providers
 - **Entity Extraction**: Automatic extraction of entities and relationships from text
@@ -122,7 +122,7 @@ Here's another thing: AlliDB doesn't just store vectors—it actually generates 
 
 ### 4. **Graph RAG Out of the Box**
 
-Traditional RAG systems are pretty "flat"—they'll find similar documents but completely ignore relationships. AlliDB's Graph RAG is different:
+Traditional RAG systems are pretty "flat", they'll find similar documents but completely ignore relationships. AlliDB's Graph RAG is different:
 
 - **Finds Similar Entities**: Vector search finds semantically similar content
 - **Expands via Graph**: Traverses relationships to find related entities
@@ -205,7 +205,7 @@ Merge & Return
 
 ## Built-in LLM Integration
 
-One of the things that makes AlliDB special is that it doesn't just store data—it can actually work with LLMs to generate embeddings and extract entities. Pretty neat, right?
+One of the things that makes AlliDB special is that it doesn't just store data, it can actually work with LLMs to generate embeddings and extract entities. Pretty neat, right?
 
 ### Embedding Generation
 
@@ -224,7 +224,7 @@ ai:
 - **OpenAI**: Works with `text-embedding-3-large` and `text-embedding-3-small` (and probably whatever they release next)
 - **Ollama**: Any Ollama embedding model works (like `nomic-embed-text`)
 - **Local**: We're working on on-device model support (coming soon!)
-- **Custom**: Got your own provider? No problem—there's a pluggable interface for that
+- **Custom**: Got your own provider? No problem, there's a pluggable interface for that
 
 ### Entity Extraction
 
@@ -990,7 +990,7 @@ Step 4: Top-K Results:
 
 ## Clustering & Distributed Protocols
 
-Alright, let's talk about how AlliDB works when you have multiple nodes. It uses a distributed architecture with consistent hashing, gossip-based membership, and quorum-based replication. This section gets into the nitty-gritty details—we're talking protocol-level stuff with byte-level encoding. If you're into that kind of thing, you'll love this section.
+Alright, let's talk about how AlliDB works when you have multiple nodes. It uses a distributed architecture with consistent hashing, gossip-based membership, and quorum-based replication. This section gets into the nitty-gritty details, we're talking protocol-level stuff with byte-level encoding. If you're into that kind of thing, you'll love this section.
 
 ### Consistent Hashing Ring
 
@@ -1523,11 +1523,11 @@ See `configs/allidb.yaml.template` for complete documentation.
 So there you have it! AlliDB is a fresh take on database design for AI workloads. Here's what makes it special:
 
 1. **Unified Architecture**: Vector search and graph traversal in one system (no more juggling multiple databases!)
-2. **Production-Ready**: Multi-tenancy, authentication, TLS, repair systems—all the stuff you need for real deployments
-3. **High Performance**: LSM-tree storage, lock-free reads, efficient compaction—it's fast
+2. **Production-Ready**: Multi-tenancy, authentication, TLS, repair systems, all the stuff you need for real deployments
+3. **High Performance**: LSM-tree storage, lock-free reads, efficient compaction, it's fast
 4. **Built-in AI**: Native LLM integration means you don't have to wire up embeddings yourself
 5. **Graph RAG**: Automatic graph expansion gives you way richer search results
-6. **Distributed**: Consistent hashing, gossip, quorum replication—it scales
+6. **Distributed**: Consistent hashing, gossip, quorum replication, it scales
 
 Whether you're building a RAG system, a knowledge graph, or a semantic search engine, AlliDB gives you everything you need in one cohesive, well-designed system.
 
