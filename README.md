@@ -1,4 +1,4 @@
-# AlliDB: A Comprehensive Overview
+# AlliDB: A distributed vector and graph database built natively for RAG
 
 ## Introduction
 
