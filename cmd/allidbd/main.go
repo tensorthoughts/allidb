@@ -35,11 +35,12 @@ import (
 	"github.com/tensorthoughts25/allidb/core/query"
 	"github.com/tensorthoughts25/allidb/core/security/auth"
 	"github.com/tensorthoughts25/allidb/core/security/secrets"
-	sectls "github.com/tensorthoughts25/allidb/core/security/tls"
+	sectls 	"github.com/tensorthoughts25/allidb/core/security/tls"
 	"github.com/tensorthoughts25/allidb/core/storage"
 	"github.com/tensorthoughts25/allidb/core/storage/compaction"
 	"github.com/tensorthoughts25/allidb/core/storage/memtable"
 	"github.com/tensorthoughts25/allidb/core/storage/wal"
+	"github.com/tensorthoughts25/allidb/core/version"
 	pb "github.com/tensorthoughts25/allidb/api/grpc/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -47,10 +48,20 @@ import (
 
 var (
 	configPath = flag.String("config", getEnv("ALLIDB_CONFIG", "configs/allidb.yaml"), "Path to configuration file")
+	showVersion = flag.Bool("version", false, "Show version information and exit")
 )
 
 func main() {
 	flag.Parse()
+
+	// Handle version flag
+	if *showVersion {
+		fmt.Printf("AlliDB version %s\n", version.GetVersion())
+		fmt.Printf("Build date: %s\n", version.BuildDate)
+		fmt.Printf("Git commit: %s\n", version.GitCommit)
+		fmt.Printf("\nFull version info:\n%s\n", version.GetFullVersion())
+		os.Exit(0)
+	}
 
 	// Step 1: Load configuration
 	cfg, err := config.LoadConfig(*configPath)
@@ -73,6 +84,7 @@ func main() {
 		"http_port":   cfg.Node.HTTPPort,
 		"data_dir":    cfg.Node.DataDir,
 		"config_path": *configPath,
+		"version":     version.GetVersion(),
 	})
 
 	// Create data directories

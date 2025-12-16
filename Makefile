@@ -9,8 +9,16 @@ MAIN_PACKAGE=./cmd/allidbd
 GO_BUILD_TAGS=grpc
 SAMPLE_CONFIG=$(CONFIG_DIR)/allidb.yaml
 
-# Go build flags
-LDFLAGS=-s -w
+# Version information (can be overridden)
+VERSION ?= 1.0.0-beta
+BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+
+# Go build flags with version information
+VERSION_LDFLAGS=-X github.com/tensorthoughts25/allidb/core/version.Version=$(VERSION) \
+                -X github.com/tensorthoughts25/allidb/core/version.BuildDate=$(BUILD_DATE) \
+                -X github.com/tensorthoughts25/allidb/core/version.GitCommit=$(GIT_COMMIT)
+LDFLAGS=-s -w $(VERSION_LDFLAGS)
 BUILD_FLAGS=-tags $(GO_BUILD_TAGS) -ldflags "$(LDFLAGS)"
 
 .PHONY: all clean install deps build config help test ensure-build-dir bench

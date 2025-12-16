@@ -14,6 +14,7 @@ import (
 	"github.com/tensorthoughts25/allidb/core/entity"
 	"github.com/tensorthoughts25/allidb/core/query"
 	"github.com/tensorthoughts25/allidb/core/security/tenant"
+	"github.com/tensorthoughts25/allidb/core/version"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -421,11 +422,13 @@ func (s *Server) HealthCheck(ctx context.Context, req *pb.HealthCheckRequest) (*
 		statusMsg = "unhealthy"
 	}
 
-	return &pb.HealthCheckResponse{
+	resp := &pb.HealthCheckResponse{
 		Healthy:        healthy,
 		Status:         statusMsg,
 		TimestampNanos: time.Now().UnixNano(),
-	}, nil
+		Version:        version.GetVersion(),
+	}
+	return resp, nil
 }
 
 // getCoordinatorConfig converts a consistency level to coordinator configuration.

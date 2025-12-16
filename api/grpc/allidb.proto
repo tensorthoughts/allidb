@@ -172,5 +172,6 @@ message HealthCheckResponse {
   bool healthy = 1;                       // Whether the service is healthy
   string status = 2;                      // Status message
   int64 timestamp_nanos = 3;              // Timestamp of the health check
+  string version = 4;                     // AlliDB version string (e.g., "1.0.0-beta")
 }
 
