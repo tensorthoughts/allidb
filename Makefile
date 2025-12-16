@@ -57,7 +57,7 @@ build: ensure-build-dir
 # Create sample config file
 config: ensure-build-dir
 	@echo "Creating sample config file..."
-	@cp configs/allidb.yaml $(SAMPLE_CONFIG)
+	@cp configs/allidb.yaml.template $(SAMPLE_CONFIG)
 	@echo "Sample config created: $(SAMPLE_CONFIG)"
 	@echo ""
 	@echo "To run AlliDB:"
